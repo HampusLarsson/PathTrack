@@ -17,11 +17,12 @@ public class RecordedRunAdapter extends RecyclerView.Adapter<RecordedRunAdapter.
 
 
     public class RecordedRunViewHolder extends RecyclerView.ViewHolder{
-        private final TextView descriptionItemView;
+        private final TextView descriptionItemView, distanceItemView;
 
         public RecordedRunViewHolder(View itemView){
             super(itemView);
             descriptionItemView = itemView.findViewById(R.id.item_description);
+            distanceItemView = itemView.findViewById(R.id.item_distance);
         }
     }
 
@@ -46,8 +47,10 @@ public class RecordedRunAdapter extends RecyclerView.Adapter<RecordedRunAdapter.
         if(mAllRuns !=null){
             RecordedRun current = mAllRuns.get(position);
             holder.descriptionItemView.setText(current.getDescription());
+            holder.distanceItemView.setText(Double.toString(current.getDistance()));
         }else{
             holder.descriptionItemView.setText("No data");
+            holder.distanceItemView.setText("No data");
         }
     }
 

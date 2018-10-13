@@ -1,4 +1,4 @@
 package com.mad.pathtrack.viewModel;
 
-public class MainViewModel {
+public class MapsViewModel {
 }

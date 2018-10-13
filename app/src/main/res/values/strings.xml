@@ -5,4 +5,6 @@
     <string name="show_map_btn">Show Map</string>
     <string name="show_recorded_btn">Show Recorded</string>
     <string name="show_recommended_btn">Show Recommended</string>
+    <string name="item_meter_value">Meter</string>
+    <string name="item_distance_text">Distance: </string>
 </resources>

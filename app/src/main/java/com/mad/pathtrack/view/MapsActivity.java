@@ -1,10 +1,8 @@
 package com.mad.pathtrack.view;
 
 import android.Manifest;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -14,24 +12,19 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.mad.pathtrack.R;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
@@ -39,7 +32,7 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    public static final String TAG = "asdf1234";
+    public static final String TAG = "MyActivity";
     private LocationRequest mLocationRequest;
     public static final int FASTEST_INTERVAL = 5000;
     public static final int UPDATE_INTERVAL = 10000;
@@ -144,15 +137,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
     public void onLocationChanged(Location location) {
-        // New location has now been determined
-        counter++;
-        mMap.clear();
+
+
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        // You can now create a LatLng Object for use with maps
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
 
     }
 
@@ -174,7 +165,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.d("MapDemoActivity", "Error trying to get last GPS location");
+                            Log.d(TAG, "Error trying to get last GPS location");
                             e.printStackTrace();
                         }
                     });
