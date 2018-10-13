@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -24,10 +25,15 @@ public class RecordedActivity extends AppCompatActivity {
 
         mRecordedViewModel = ViewModelProviders.of(this).get(RecordedViewModel.class);
 
+
         RecyclerView recyclerView = findViewById(R.id.recorded_recycler_view);
         final RecordedRunAdapter adapter = new RecordedRunAdapter(this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        DividerItemDecoration itemDecor = new DividerItemDecoration(recyclerView.getContext(),
+                ((LinearLayoutManager) layoutManager).getOrientation());
+        recyclerView.addItemDecoration(itemDecor);
 
         mRecordedViewModel.getAllRuns().observe(this, new Observer<List<RecordedRun>>() {
             @Override
