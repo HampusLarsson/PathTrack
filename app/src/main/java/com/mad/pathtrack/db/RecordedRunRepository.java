@@ -12,28 +12,33 @@ public class RecordedRunRepository {
     private RecordedRunDao mRecordedRunDao;
     private LiveData<List<RecordedRun>> mAllRuns;
 
-    public RecordedRunRepository(Application application){
+    public RecordedRunRepository(Application application) {
         RecordedRunRoomDB db = RecordedRunRoomDB.getDatabase(application);
         mRecordedRunDao = db.recordedRunDao();
         mAllRuns = mRecordedRunDao.getAllRuns();
     }
 
-    public LiveData<List<RecordedRun>> getAllRuns(){
+    public LiveData<List<RecordedRun>> getAllRuns() {
         return mAllRuns;
     }
 
-    public void insert (RecordedRun recordedRun){
+    public void insert(RecordedRun recordedRun) {
         new insertAsyncTask(mRecordedRunDao).execute(recordedRun);
+    }
+
+    public RecordedRun getRunById(int id) {
+        return mRecordedRunDao.findById(id);
     }
 
     private static class insertAsyncTask extends AsyncTask<RecordedRun, Void, Void> {
         private RecordedRunDao mAsyncDao;
 
-        public insertAsyncTask(RecordedRunDao dao){
+        public insertAsyncTask(RecordedRunDao dao) {
             mAsyncDao = dao;
         }
+
         @Override
-        protected Void doInBackground(final RecordedRun... params){
+        protected Void doInBackground(final RecordedRun... params) {
             mAsyncDao.insert(params[0]);
             return null;
         }

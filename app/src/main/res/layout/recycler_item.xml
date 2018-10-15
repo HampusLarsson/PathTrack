@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@android:color/white"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:id="@+id/item_main_layout">
 
     <TextView
         android:id="@+id/item_description"

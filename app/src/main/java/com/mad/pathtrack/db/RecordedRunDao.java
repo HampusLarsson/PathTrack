@@ -18,6 +18,8 @@ public interface RecordedRunDao {
     void deleteAll();
     @Query("SELECT * FROM recorded_run_table")
     LiveData<List<RecordedRun>> getAllRuns();
+    @Query("SELECT * FROM recorded_run_table WHERE mId= :id")
+    RecordedRun findById(int id);
 
 
 }

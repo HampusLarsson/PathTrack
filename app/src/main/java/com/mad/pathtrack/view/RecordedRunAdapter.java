@@ -1,11 +1,15 @@
 package com.mad.pathtrack.view;
 
 import android.content.Context;
+import android.content.Intent;
+import android.icu.text.Collator;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mad.pathtrack.R;
@@ -16,20 +20,44 @@ import java.util.List;
 public class RecordedRunAdapter extends RecyclerView.Adapter<RecordedRunAdapter.RecordedRunViewHolder> {
 
 
-    public class RecordedRunViewHolder extends RecyclerView.ViewHolder{
-        private final TextView descriptionItemView, distanceItemView;
+    public class RecordedRunViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        private final TextView mDescriptionItemView, mDistanceItemView;
+        private int mPosition;
+        public static final String TYPE_KEY = "type";
+        public static final String ID_KEY = "id";
+        public static final String DISPLAY_MODE = "display";
+
+
 
         public RecordedRunViewHolder(View itemView){
             super(itemView);
-            descriptionItemView = itemView.findViewById(R.id.item_description);
-            distanceItemView = itemView.findViewById(R.id.item_distance);
+            mDescriptionItemView = itemView.findViewById(R.id.item_description);
+            mDistanceItemView = itemView.findViewById(R.id.item_distance);
+            RelativeLayout rl = itemView.findViewById(R.id.item_main_layout);
+            rl.setOnClickListener(this);
+
         }
+
+        @Override
+        public void onClick(View v) {
+            this.mPosition = getAdapterPosition();
+            RecordedRun run = mAllRuns.get(mPosition);
+            Intent intent = new Intent(mContext, MapsActivity.class);
+            intent.putExtra(TYPE_KEY, DISPLAY_MODE);
+            intent.putExtra(ID_KEY,run.getId());
+            mContext.startActivity(intent);
+
+        }
+
+
     }
 
     private final LayoutInflater mInflater;
     private List<RecordedRun> mAllRuns;
+    private Context mContext;
 
     public RecordedRunAdapter(Context context){
+        mContext = context;
         mInflater = LayoutInflater.from(context);
     }
 
@@ -46,11 +74,11 @@ public class RecordedRunAdapter extends RecyclerView.Adapter<RecordedRunAdapter.
     public void onBindViewHolder(@NonNull RecordedRunAdapter.RecordedRunViewHolder holder, int position) {
         if(mAllRuns !=null){
             RecordedRun current = mAllRuns.get(position);
-            holder.descriptionItemView.setText(current.getDescription());
-            holder.distanceItemView.setText(Double.toString(current.getDistance()));
+            holder.mDescriptionItemView.setText(current.getDescription());
+            holder.mDistanceItemView.setText(Double.toString(current.getDistance()));
         }else{
-            holder.descriptionItemView.setText("No data");
-            holder.distanceItemView.setText("No data");
+            holder.mDescriptionItemView.setText("No data");
+            holder.mDistanceItemView.setText("No data");
         }
     }
 
