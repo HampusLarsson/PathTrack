@@ -14,20 +14,20 @@ public class RecordedRun {
     @PrimaryKey(autoGenerate = true)
     private int mId;
 
-    @ColumnInfo(name="description")
+    @ColumnInfo(name = "description")
     private String mDescription;
-    @ColumnInfo(name="mDistance")
+    @ColumnInfo(name = "mDistance")
     private long mDistance;
     @Ignore
     private ArrayList<Location> mPath;
-    @ColumnInfo(name="path")
+    @ColumnInfo(name = "path")
     private String pathAsString;
 
-    public RecordedRun(String description){
+    public RecordedRun(String description) {
         mDescription = description;
         mPath = new ArrayList<>();
         mDistance = 0;
-        pathAsString ="";
+        pathAsString = "";
 
     }
 
@@ -56,11 +56,11 @@ public class RecordedRun {
         stringToPath();
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return mDescription;
     }
 
-    public void setDescription(String description){
+    public void setDescription(String description) {
         mDescription = description;
     }
 
@@ -72,30 +72,31 @@ public class RecordedRun {
         return mPath;
     }
 
-    public void pathToString(){
-        for(Location l:mPath){
+    public void pathToString() {
+        for (Location l : mPath) {
             pathAsString += Double.toString(l.getLongitude());
             pathAsString += "," + Double.toString(l.getLatitude()) + ",";
         }
     }
 
-    public void stringToPath(){
-        if(pathAsString != "" && pathAsString != null){
-        String[] tempPath = pathAsString.split(",");
-        for(int i = 0;i<tempPath.length;i=i+2) {
-            Location temp = new Location("");
-            if(tempPath[i] != "" && tempPath[i] != null) {
-                temp.setLongitude(Double.parseDouble(tempPath[i]));
-                temp.setLatitude(Double.parseDouble(tempPath[i + 1]));
-                mPath.add(temp);
+    public void stringToPath() {
+        if (pathAsString != "" && pathAsString != null) {
+            String[] tempPath = pathAsString.split(",");
+            for (int i = 0; i < tempPath.length; i = i + 2) {
+                Location temp = new Location("");
+                if (tempPath[i] != "" && tempPath[i] != null) {
+                    temp.setLongitude(Double.parseDouble(tempPath[i]));
+                    temp.setLatitude(Double.parseDouble(tempPath[i + 1]));
+                    mPath.add(temp);
+                }
             }
         }
-        }
     }
-    public void calculateDistance(){
 
-        for(int i = 0; i<mPath.size();i++){
-            if(!(i+2>mPath.size())) {
+    public void calculateDistance() {
+
+        for (int i = 0; i < mPath.size(); i++) {
+            if (!(i + 2 > mPath.size())) {
                 float dist = mPath.get(i).distanceTo(mPath.get(i + 1));
                 mDistance += dist;
             }

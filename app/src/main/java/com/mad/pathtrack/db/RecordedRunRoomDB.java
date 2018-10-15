@@ -20,10 +20,10 @@ public abstract class RecordedRunRoomDB extends RoomDatabase {
 
     private static volatile RecordedRunRoomDB INSTANCE;
 
-    static RecordedRunRoomDB getDatabase(final Context context){
-        if(INSTANCE == null){
-            synchronized(RecordedRunRoomDB.class){
-                if(INSTANCE == null){
+    static RecordedRunRoomDB getDatabase(final Context context) {
+        if (INSTANCE == null) {
+            synchronized (RecordedRunRoomDB.class) {
+                if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(), RecordedRunRoomDB.class,
                             "recorded_run_database").addCallback(sRoomDatabaseCallback)
                             .build();
@@ -33,9 +33,9 @@ public abstract class RecordedRunRoomDB extends RoomDatabase {
         return INSTANCE;
     }
 
-    private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback(){
+    private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
         @Override
-        public void onOpen(@NonNull SupportSQLiteDatabase db){
+        public void onOpen(@NonNull SupportSQLiteDatabase db) {
             super.onOpen(db);
             new PopulateDbAsync(INSTANCE).execute();
         }
@@ -43,14 +43,15 @@ public abstract class RecordedRunRoomDB extends RoomDatabase {
 
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
         private final RecordedRunDao mDao;
-        PopulateDbAsync(RecordedRunRoomDB db){
+
+        PopulateDbAsync(RecordedRunRoomDB db) {
             mDao = db.recordedRunDao();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             mDao.deleteAll();
-            RecordedRun run = new RecordedRun("Sydney");
+            RecordedRun run = new RecordedRun("Centennial Park");
             ArrayList<Location> path = new ArrayList<>();
             Location loc = new Location("");
             loc.setLatitude(-33.904580);
@@ -72,7 +73,7 @@ public abstract class RecordedRunRoomDB extends RoomDatabase {
             run.pathToString();
             run.calculateDistance();
 
-            RecordedRun run1 = new RecordedRun("Tokyo");
+            RecordedRun run1 = new RecordedRun("Randwick");
             ArrayList<Location> path1 = new ArrayList<>();
             Location loc4 = new Location("");
             loc4.setLatitude(-33.909324);
@@ -95,7 +96,7 @@ public abstract class RecordedRunRoomDB extends RoomDatabase {
             run1.calculateDistance();
 
 
-            RecordedRun run2 = new RecordedRun("Hong Kong");
+            RecordedRun run2 = new RecordedRun("Royal Randwick Racecourse");
             ArrayList<Location> path2 = new ArrayList<>();
             Location loc8 = new Location("");
             loc8.setLatitude(-33.910642);
@@ -117,7 +118,7 @@ public abstract class RecordedRunRoomDB extends RoomDatabase {
             run2.pathToString();
             run2.calculateDistance();
 
-            RecordedRun run3 = new RecordedRun("Singapore");
+            RecordedRun run3 = new RecordedRun("Moore Park");
             ArrayList<Location> path3 = new ArrayList<>();
             Location loc12 = new Location("");
             loc12.setLatitude(-33.900576);

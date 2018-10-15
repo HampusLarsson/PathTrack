@@ -14,7 +14,7 @@ public class MapsViewModel extends AndroidViewModel {
     private ArrayList<Location> mCurrentPath;
     private RecordedRunRepository mRepository;
 
-    public MapsViewModel(Application application){
+    public MapsViewModel(Application application) {
         super(application);
 
         mRepository = new RecordedRunRepository(application);
@@ -22,33 +22,33 @@ public class MapsViewModel extends AndroidViewModel {
 
     }
 
-    public RecordedRun getCurrentRun(){
+    public RecordedRun getCurrentRun() {
         return mCurrentRun;
     }
 
-    public void getRunById(int id){
-       mCurrentRun =  mRepository.getRunById(id);
-       mCurrentRun.stringToPath();
+    public void getRunById(int id) {
+        mCurrentRun = mRepository.getRunById(id);
+        mCurrentRun.stringToPath();
     }
 
-    public void setCurrentRun(RecordedRun run){
+    public void setCurrentRun(RecordedRun run) {
         mCurrentRun = run;
     }
 
-    public void setCurrentPath(ArrayList<Location> locations){
+    public void setCurrentPath(ArrayList<Location> locations) {
         mCurrentPath = locations;
     }
 
-    public void addLocation(Location location){
+    public void addLocation(Location location) {
         mCurrentPath.add(location);
 
     }
 
-    public void startRecording(RecordedRun recordedRun){
+    public void startRecording(RecordedRun recordedRun) {
         mCurrentRun = recordedRun;
     }
 
-    public void insert(){
+    public void insert() {
         mCurrentRun.setPath(mCurrentPath);
         mCurrentRun.pathToString();
         mCurrentRun.calculateDistance();

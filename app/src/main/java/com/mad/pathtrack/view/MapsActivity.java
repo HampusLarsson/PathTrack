@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -51,14 +50,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private MapsViewModel mMapsViewModel;
-    private PolylineOptions mPath;
+    private PolylineOptions mPolylineOptions;
     private Polyline mPolyline;
     private ArrayList<LatLng> mLocations;
+    private ArrayList<Location> mPath;
 
     private String mDescription;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
-    private Boolean mRecording;
     private String mTypeOfActivity;
     private int mRunId;
 
@@ -72,11 +71,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final String DIALOG_TITLE = "Enter Description";
     public static final String DIALOG_OK = "OK";
     public static final String DIALOG_CANCEL = "Cancel";
-    public static final String PATH_KEY = "mPath";
     public static final String TYPE_KEY = "type";
     public static final String RECORD_KEY = "record";
     public static final String DISPLAY_KEY = "display";
     public static final String LAST_LOCATION_ERROR = "Error trying to get last GPS location";
+    public static final String NO_PATH_ERROR = "No recorded path in chosen activity";
 
 
     @Override
@@ -96,14 +95,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Initiate viewModel and locations arrayList and PolyLineOptions
         mLocations = new ArrayList<>();
         mMapsViewModel = ViewModelProviders.of(this).get(MapsViewModel.class);
-        mPath = new PolylineOptions();
+        mPolylineOptions = new PolylineOptions();
+        mPath = new ArrayList<>();
+
 
         //If it's a display activity fetch the correct activity by Id
-        if(mTypeOfActivity.equals(DISPLAY_KEY)) {
+        if (mTypeOfActivity.equals(DISPLAY_KEY)) {
             mRunId = intent.getIntExtra(ID_KEY, 0);
             new LoadRunAsync(mRunId).execute();
         }
-
 
 
         //Create the LocationRequest
@@ -137,15 +137,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 stopRecording();
             }
         });
+        if (mTypeOfActivity.equals(DISPLAY_KEY)) {
+            fab.setVisibility(View.INVISIBLE);
+        } else {
+            fab.setVisibility(View.VISIBLE);
+        }
 
 
     }
 
-    private class LoadRunAsync extends AsyncTask<Void, Void, Void>{
+    /**
+     * asynctask to find run by id and save it to the activity
+     */
+
+    private class LoadRunAsync extends AsyncTask<Void, Void, Void> {
 
         int mId;
 
-        public LoadRunAsync(int id){
+        public LoadRunAsync(int id) {
             mId = id;
         }
 
@@ -170,22 +179,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mPolyline = mMap.addPolyline(mPolylineOptions);
 
         try {
             googleMap.setMyLocationEnabled(true);
-        }catch(SecurityException e){
+        } catch (SecurityException e) {
             e.printStackTrace();
             checkPermissions();
         }
 
-        if(mTypeOfActivity.equals(DISPLAY_KEY)){
-            //Draw the mPath from the viewModel
+        if (mTypeOfActivity.equals(DISPLAY_KEY)) {
+            //Draw the polyLine on the map
             drawPolyline(mMapsViewModel.getCurrentRun().getPath());
 
 
-        }else if(mTypeOfActivity.equals(RECORD_KEY)){
+        } else if (mTypeOfActivity.equals(RECORD_KEY)) {
             getDescription();
-            mMapsViewModel.setCurrentRun(new RecordedRun(mDescription));
+
 
         }
 
@@ -225,7 +235,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, mLocationCallback,
                     Looper.myLooper());
-        }catch(SecurityException e){
+        } catch (SecurityException e) {
             e.printStackTrace();
             checkPermissions();
         }
@@ -233,22 +243,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * When location is updated the callback calls this method and provides the new location
-     * If the activity is in record mode the activity is added to the current mPath and the location
+     * If the activity is in record mode the activity is added to the current mPolylineOptions and the location
      * is also added to the mPolyline that is beeing drawn on the map
+     *
      * @param location
      */
     public void onLocationChanged(Location location) {
-        if(mTypeOfActivity.equals(RECORD_KEY)) {
-            String msg = "Updated Location: " +
-                    Double.toString(location.getLatitude()) + "," +
-                    Double.toString(location.getLongitude());
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-            LatLng latest = new LatLng(location.getLatitude(), location.getLongitude());
-            mLocations.add(latest);
-            if (mLocations.size() > 1) {
-                mPolyline.setPoints(mLocations);
+
+            if (mTypeOfActivity.equals(RECORD_KEY) && location != null) {
+                mPath.add(location);
+                LatLng latest = new LatLng(location.getLatitude(), location.getLongitude());
+                mLocations.add(latest);
+                if (mLocations.size() > 1) {
+                    mPolyline.setPoints(mLocations);
+                }
             }
-        }
 
 
     }
@@ -266,11 +275,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         @Override
                         public void onSuccess(Location location) {
                             if (location != null) {
-                                if(mTypeOfActivity.equals(RECORD_KEY)) {
+                                if (mTypeOfActivity.equals(RECORD_KEY)) {
                                     LatLng lastKnown = new LatLng(location.getLatitude(), location.getLongitude());
                                     mLocations.add(lastKnown);
-                                    mPath = new PolylineOptions().add(lastKnown);
-                                    mPolyline = mMap.addPolyline(mPath);
+                                    mPath.add(location);
+                                    mPolylineOptions = new PolylineOptions().add(lastKnown);
+                                    mPolyline = mMap.addPolyline(mPolylineOptions);
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnown, 15));
+
                                 }
                             }
                         }
@@ -282,48 +294,65 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             e.printStackTrace();
                         }
                     });
-        }catch(SecurityException e){
+        } catch (SecurityException e) {
             e.printStackTrace();
             checkPermissions();
         }
     }
 
-    public void drawPolyline(ArrayList<Location> locations){
+    /**
+     * Draws the polyline from the given array of locations
+     *
+     * @param locations
+     */
+    public void drawPolyline(ArrayList<Location> locations) {
 
-        Log.d("drawPoly", Integer.toString(locations.size()));
+        if (locations.size() > 1) {
+            for (int i = 0; i < locations.size(); i++) {
+                LatLng tempLoc = new LatLng(locations.get(i).getLatitude(), locations.get(i).getLongitude());
+                mPolylineOptions.add(tempLoc);
+            }
 
-        for(int i = 0; i<locations.size();i++){
-            LatLng tempLoc = new LatLng(locations.get(i).getLatitude(), locations.get(i).getLongitude());
-            mPath.add(tempLoc);
+            mPolyline = mMap.addPolyline(mPolylineOptions);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude()), 14));
+        } else {
+            Toast.makeText(this, NO_PATH_ERROR, Toast.LENGTH_LONG);
         }
-
-        mPolyline = mMap.addPolyline(mPath);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude()),14));
-
 
     }
 
-    public void stopRecording(){
+    /**
+     * Stops the recording, inserts the RecordedRun object into the database and closes the activity
+     */
+
+    public void stopRecording() {
+        mMapsViewModel.setCurrentPath(mPath);
         mMapsViewModel.insert();
         this.finish();
     }
-    public void stopLocationUpdates(){
+
+    public void stopLocationUpdates() {
         getFusedLocationProviderClient(this).removeLocationUpdates(mLocationCallback);
     }
 
-    public void getDescription(){
+    /**
+     * Starts dialog to get description of current run
+     */
+    public void getDescription() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(DIALOG_TITLE);
 
 
         final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         builder.setView(input);
 
         builder.setPositiveButton(DIALOG_OK, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mDescription = input.getText().toString();
+                mMapsViewModel.setCurrentRun(new RecordedRun(mDescription));
+
             }
         });
         builder.setNegativeButton(DIALOG_CANCEL, new DialogInterface.OnClickListener() {
@@ -339,7 +368,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //Methods for checking permissions and asking for permissions
     //Don't think they all are needed but didn't work before I added them
 
-    public void checkPermissions(){
+    public void checkPermissions() {
         checkFinePermissions();
         checkCoarsePermissions();
         checkInternetPermissions();
@@ -374,7 +403,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void checkCoarsePermissions() {
         if (!(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) ){
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
             requestCoarsePermissions();
         }
     }
