@@ -26,6 +26,9 @@ public class RecordedRunRepository {
         new insertAsyncTask(mRecordedRunDao).execute(recordedRun);
     }
 
+    public RecordedRun getRunById(int id){
+       return mRecordedRunDao.findById(id);
+    }
     private static class insertAsyncTask extends AsyncTask<RecordedRun, Void, Void> {
         private RecordedRunDao mAsyncDao;
 

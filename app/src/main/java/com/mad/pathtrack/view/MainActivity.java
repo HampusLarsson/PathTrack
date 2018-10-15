@@ -13,6 +13,9 @@ import android.widget.Button;
 
 import com.mad.pathtrack.R;
 
+import static com.mad.pathtrack.view.MapsActivity.RECORD_KEY;
+import static com.mad.pathtrack.view.RecordedRunAdapter.RecordedRunViewHolder.TYPE_KEY;
+
 public class MainActivity extends AppCompatActivity  {
 
 
@@ -28,6 +31,7 @@ public class MainActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                intent.putExtra(TYPE_KEY, RECORD_KEY);
                 startActivity(intent);
             }
         });
