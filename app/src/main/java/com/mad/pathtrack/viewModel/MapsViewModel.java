@@ -35,6 +35,10 @@ public class MapsViewModel extends AndroidViewModel {
         mCurrentRun = run;
     }
 
+    public void setCurrentPath(ArrayList<Location> locations){
+        mCurrentPath = locations;
+    }
+
     public void addLocation(Location location){
         mCurrentPath.add(location);
 
@@ -43,6 +47,7 @@ public class MapsViewModel extends AndroidViewModel {
     public void startRecording(RecordedRun recordedRun){
         mCurrentRun = recordedRun;
     }
+
     public void insert(){
         mCurrentRun.setPath(mCurrentPath);
         mCurrentRun.pathToString();
