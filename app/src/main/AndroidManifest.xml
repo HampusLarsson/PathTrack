@@ -34,8 +34,10 @@
         <activity
             android:name=".view.MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".view.RecordedActivity" />
-        <activity android:name=".view.RecommendedActivity" />
+        <activity android:name=".view.RecordedActivity"
+            android:label="@string/recorded_title"/>
+        <activity android:name=".view.RecommendedActivity"
+            android:label="@string/recommended_title"/>
     </application>
 
 </manifest>

@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">PathTrack</string>
+    <string name="recorded_title">Recorded Runs</string>
+    <string name="recommended_title">Recommended Runs</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
     <string name="show_map_btn">Start Recording</string>
