@@ -68,7 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final int MY_REQUEST_INTERNET = 12;
     public static final int MY_REQUEST_COARSE_LOCATION = 13;
     public static final int MY_REQUEST_NETWORK_STATE = 14;
-    public static final String DIALOG_TITLE = "Enter Description";
+    public static final String DIALOG_TITLE = "Add a description for your run";
     public static final String DIALOG_OK = "OK";
     public static final String DIALOG_CANCEL = "Cancel";
     public static final String TYPE_KEY = "type";
@@ -76,6 +76,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final String DISPLAY_KEY = "display";
     public static final String LAST_LOCATION_ERROR = "Error trying to get last GPS location";
     public static final String NO_PATH_ERROR = "No recorded path in chosen activity";
+    public static final String DESCRIPTION_KEY = "description";
+    public static final String DISTANCE_KEY = "distance";
 
 
     @Override
@@ -147,7 +149,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * asynctask to find run by id and save it to the activity
+     * Asynctask to find run by id and save it to the activity
      */
 
     private class LoadRunAsync extends AsyncTask<Void, Void, Void> {
@@ -328,7 +330,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void stopRecording() {
         mMapsViewModel.setCurrentPath(mPath);
         mMapsViewModel.insert();
-        this.finish();
+        Intent intent = new Intent(this, PostRunActivity.class);
+        intent.putExtra(DESCRIPTION_KEY, mMapsViewModel.getCurrentRun().getDescription());
+        intent.putExtra(DISTANCE_KEY, mMapsViewModel.getCurrentRun().getDistance());
+        startActivity(intent);
+        finish();
+
     }
 
     public void stopLocationUpdates() {
@@ -341,6 +348,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void getDescription() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(DIALOG_TITLE);
+
 
 
         final EditText input = new EditText(this);

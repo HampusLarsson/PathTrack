@@ -5,8 +5,13 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
     <string name="show_map_btn">Start Recording</string>
-    <string name="show_recorded_btn">Show Recorded</string>
-    <string name="show_recommended_btn">Show Recommended</string>
+    <string name="show_recorded_btn">Show Recorded Runs</string>
+    <string name="show_recommended_btn">Show Recommended Runs</string>
     <string name="item_meter_value">Meter</string>
     <string name="item_distance_text">Distance: </string>
+    <string name="post_title">Congratiulations you have finished your run! </string>
+    <string name="post_description">You named this run: %1$s  </string>
+    <string name="post_distance">You ran: %1$s meters! </string>
+    <string name="post_finish">Finish!</string>
+
 </resources>

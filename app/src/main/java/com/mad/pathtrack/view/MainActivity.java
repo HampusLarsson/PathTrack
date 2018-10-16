@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.mad.pathtrack.R;
 
 import static com.mad.pathtrack.view.MapsActivity.RECORD_KEY;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity  {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Button showMapButton = findViewById(R.id.show_map_button);
+        ButtonRectangle showMapButton = findViewById(R.id.show_map_button);
         showMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
-        Button showRecordedButton = findViewById(R.id.show_recorded_button);
+        ButtonRectangle showRecordedButton = findViewById(R.id.show_recorded_button);
         showRecordedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
-        Button showRecommendedButton = findViewById(R.id.show_recommended_button);
+        ButtonRectangle showRecommendedButton = findViewById(R.id.show_recommended_button);
         showRecommendedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,27 +62,7 @@ public class MainActivity extends AppCompatActivity  {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
 
 }

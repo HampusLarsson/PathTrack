@@ -40,6 +40,7 @@ public class RecordedRun {
     }
 
     public long getDistance() {
+        calculateDistance();
         return mDistance;
     }
 
@@ -65,8 +66,12 @@ public class RecordedRun {
     }
 
     public void setPath(ArrayList<Location> path) {
-        mPath = path;
+
+        if(path != null) {
+            mPath = path;
+        }
     }
+
 
     public ArrayList<Location> getPath() {
         return mPath;
